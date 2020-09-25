@@ -63,9 +63,12 @@ def sensor_thread():
         sfg = graphics.tex_load(iFiles[pic_num])
         nexttm = 0
 
+    ## commands here are executed before the function loop
+
     while True:
         try:
             now = time.time()
+
             if config.GUI and now > nexttm:           # change background
                 nexttm = now + config.TMDELAY
                 sbg = sfg
@@ -84,7 +87,10 @@ def sensor_thread():
 
             if config.GUI:
                 if config.BACKLIGHT_AUTO:
-                    if now < peripherals.eg_object.lastmotion + config.BACKLIGHT_AUTO:
+                    #if now < peripherals.eg_object.lastmotion + config.BACKLIGHT_AUTO:
+                    if config.BACKLIGHT_TOUCH and now < peripherals.eg_object.lasttouch + config.BACKLIGHT_AUTO:
+                        peripherals.eg_object.backlight_level = peripherals.eg_object.max_backlight
+                    elif not config.BACKLIGHT_TOUCH and now < peripherals.eg_object.lastmotion + config.BACKLIGHT_AUTO: 
                         peripherals.eg_object.backlight_level = peripherals.eg_object.max_backlight
                     else:
                         peripherals.eg_object.backlight_level = config.MIN_BACKLIGHT
@@ -99,7 +105,6 @@ def sensor_thread():
             if config.START_HTTP_SERVER:
                 littleserver.handle_request()
 
-           
 
             peripherals.get_infrared()
 
@@ -164,7 +169,7 @@ def sensor_thread():
                 if log_level <= logging.DEBUG: # only output if log_level is debug
                     sys.stdout.write('\r')
                     sys.stdout.write(temperatures_str)
-                    
+
                     sys.stdout.write(
                         ' i2c err:' + str(peripherals.eg_object.i2cerrorrate)+'% - ' + time.strftime("%H:%M") + ' ')
                     sys.stdout.flush()
@@ -224,8 +229,10 @@ if config.GUI:
 
     for slidestring in config.slides:
         try:
+            print('shpi.slides.'+slidestring)
             slides.append(importlib.import_module("shpi.slides." + slidestring))
         except:
+            slides.append(importlib.import_module("shpi.slides."+slidestring))
             logging.error(f"error loading slide: " + slidestring)
             pass
 

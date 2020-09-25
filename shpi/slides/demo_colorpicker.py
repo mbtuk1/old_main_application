@@ -61,13 +61,15 @@ def blackgradient(size= 255,gradient_magnitude=1.):
 
 
 
+print("starting colorpicker")
+
 tex = pi3d.Texture(blackgradient())
 rect = pi3d.Sprite(camera=graphics.CAMERA,x=300,y=0,w=100,h=440,z=0.2)
 rect.set_material((1.0, 1.0, 1.0))
 sprite = pi3d.ImageSprite(tex, graphics.SHADER,x=300,y=0, w=100.0, h=440.0, z=0.1)
 
 
-
+print("imagesize start")
 
 
 imgsize = (32, 32) #The size of the image
@@ -178,7 +180,7 @@ def inloop(textchange=False, activity=False, offset=0):
 
 
          if [r,g,b] != peripherals.eg_object.led:
-           peripherals.control_led([r,g,b])
+           peripherals.control_led(str(r)+','+str(g)+','+str(b))
 
          # idea to speed it up
          #if r != peripherals.eg_object.led_red:

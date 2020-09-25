@@ -1,8 +1,8 @@
 DEMO = True  # shows demo slides
 GUI = True # turn off all graphical output
 # "logfile.txt" # None logs to screen, filename logs (appends) to file
-LOG_FILE = None # NB watch out if logging to file - will keep getting bigger!
-LOG_LEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL, EXCEPTION
+LOG_FILE = None #'log.txt' #None # NB watch out if logging to file - will keep getting bigger!
+LOG_LEVEL = "ERROR" #"DEBUG"  # DEBUG, INFO, WARNING, ERROR, CRITICAL, EXCEPTION
 
 TMDELAY = 200  # delay for changing backgrounds
 INFRARED_TM = 3  # s between checking infrared sensor
@@ -10,9 +10,9 @@ SENSOR_TM = 10  # s between updating sensor values in peripherals.eg_object
 ICAL_TM = 3600  # update calenderslide every 3600 seconds
 SLIDE_PARALLAX = False # background movement while sliding, bit slow on zero
 SLIDE_SHADOW = False  # shadow effect while manually sliding
-SHOW_AIRQUALITY = True  # show airquality over LED
+SHOW_AIRQUALITY = False #True # show airquality over LED
 SHOW_WIFISTATUS = True #show wifi indicator  (top right)
-SHOW_SLIDESTATUS = False #show slide indicator (bottom)
+SHOW_SLIDESTATUS = True #False #show slide indicator (bottom)
 # activate simple GET/POST server in python, be aware of  security issues
 START_HTTP_SERVER = True
 HTTP_PORT = 9000
@@ -27,19 +27,22 @@ MQTT_QOS = 0
 
 MOTION_THRESHOLD = 4  # threshold in seconds of movement
 
-BACKLIGHT_AUTO = 60  # timer for backlight auto off, 0 for always on
+BACKLIGHT_AUTO = 10  # timer for backlight auto off, 0 for always on
+BACKLIGHT_TOUCH = True # True: display awakes on touch, False: display awakes on motion
+
 # for check in server , not implemented so far
 ALLOWEDDIPS = list('192.168.1.31')
 
 MAX_BACKLIGHT = 31  # possible values  0 .. 31
 MIN_BACKLIGHT = 1
+INIT_BACKLIGHT = 10 # backlight level at startup
 
 HYSTERESIS = 0.5  # in degree
 set_temp = 23
 COOLINGRELAY = 0  # off
-HEATINGRELAY = 1  # on relay 1
-SHUTTERDOWN = 2  # relay 2
-SHUTTERUP = 3  # relay 3   #  4... buzzer, 5 d13, 6 hwb
+HEATINGRELAY = 0  # on relay 1
+SHUTTERDOWN = 0  # relay 2
+SHUTTERUP = 0  # relay 3   #  4... buzzer, 5 d13, 6 hwb
 LIGHTRELAY = 0  # off
 VENTRELAY = 0  # off
 MIN_HUMIDITY_THRESHOLD = 0
@@ -54,7 +57,7 @@ ICALLINK = 'muellkalender.ics'  # also http possible
 
 OWMKEY = '20f7aab0a600927a8486b220200ee694'
 OWMLANGUAGE = 'de'
-OWMCITY = 'Berlin, DE'
+OWMCITY = 'Wien, AT'
 
 WEEKDAYS = ['Montag', 'Dienstag', 'Mittwoch',
             'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
@@ -110,8 +113,11 @@ subslide = None
 # configure your slides here
 autoslidetm = 10
 autoslides = []
-slides = ['overview', 'dial_thermostat', 'weather', 'ical2', 'status', 'shutter',
-          'livegraph', 'amperemeter', 'rrdgraph', 'settings']
+# original settings
+#slides = ['overview', 'dial_thermostat', 'weather', 'ical2', 'status', 'shutter',
+#          'livegraph', 'amperemeter', 'rrdgraph', 'settings']
+
+slides = ['relais','overview', 'weather', 'livegraph', 'rrdgraph', 'settings', 'status']
 autoslideints = []
 
 for autoslide in autoslides:
@@ -122,7 +128,12 @@ for autoslide in autoslides:
         i += 1
 
 if DEMO:
-    slides.append('demo_floorplan')
-    slides.append('demo_remote_button')
+    #slides.append('demo_floorplan')
+    #slides.append('demo_remote_button')
+    #slides.append('demo_colorpicker')
+    #slides.append('demo_donut')
+    slides.append('demo_gradient')
+    #slides.append('dial_thermostat')
+
 
 subslides = ['videostream', 'intercom', 'wifisetup', 'wifikeyboard', 'alert']

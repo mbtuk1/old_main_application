@@ -125,6 +125,7 @@ def touchloop():
             if value == 1: # touch started
                 eg_object.lastmotion = time.time()  # wake screen up on touch
                 lasttouch = time.time()
+                eg_object.lasttouch = lasttouch
                 touch_active = True
                 touch_starty = True
                 touch_startx = True
@@ -138,12 +139,14 @@ def touchloop():
 def alert(value=1):
     if value and (int)(time.time()) % 2 == 0:
         control_relay(4, 1)
-        control_led([255, 0, 0])
+        #control_led([255, 0, 0])
+        control_led_color(COLOR_RED,255)
         control_backlight_level(1)
         config.subslide = 'alert'
     else:
         control_relay(4, 0)
-        control_led([0, 0, 0])
+        #control_led([0, 0, 0])
+        control_led_color(COLOR_RED,0)
         control_backlight_level(eg_object.max_backlight)
 
 
@@ -234,6 +237,7 @@ def touch_debounce(channel):
     firsttouch = True
     x, y = get_touch()
     lasttouch = time.time()
+    eg_object.lasttouch = lasttouch
     if (channel == TOUCHINT):
         eg_object.lastmotion = time.time()  # wake screen up on touch
         if ADDR_32U4 != 0:
@@ -389,12 +393,10 @@ def control_vent_pwm(value):
 
 
 def control_backlight_level(value):
-    file_path = resource_filename("shpi", "bin/backlight")
     try:
         value = int(value)
         assert -1 < value <= config.MAX_BACKLIGHT, "value outside permitted range"
-        # needs sudo because of timing
-        os.popen('sudo chrt --rr 99 {} {}'.format(file_path, value))
+
         if ADDR_32U4 != 0:
             return write_32u4(BACKLIGHT_LEVEL, value, "backlight_level")
         else:
@@ -435,6 +437,7 @@ def control_led(rgbvalues):
             control_led_color(COLOR_GREEN, rgbvalues[1])
             control_led_color(COLOR_BLUE, rgbvalues[2])
         else: # TODO this is a temp botch for testing
+            print('no ADDR_32U4')
             gpio.remove_event_detect(PIR)
             zero_lite.control_led(rgbvalues)
             gpio.add_event_detect(PIR, gpio.BOTH, callback=motion_detected)
@@ -812,7 +815,8 @@ class EgClass(object):
     relay2 = 0
     relay3 = 0
     lastmotion = time.time()
-    max_backlight = config.MAX_BACKLIGHT
+    lasttouch = time.time()
+    max_backlight = config.INIT_BACKLIGHT
     usertext = ''
     usertextshow = '|'
     alert = 0
